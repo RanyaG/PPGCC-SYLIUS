@@ -14,6 +14,7 @@ Este pacote de replicação foi estruturado em estrita conformidade com as diret
 
 ## Estrutura do repositório
 
+```text
 .
 ├── data/
 │   └── coleta_ampliada.xlsx        # Planilha anonimizada com a classificação das 22 suítes
