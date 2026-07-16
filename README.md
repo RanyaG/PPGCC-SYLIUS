@@ -1,3 +1,5 @@
+[![DOI](https://zenodo.org/badge/1302052124.svg)](https://doi.org/10.5281/zenodo.21400917)
+
 # Avaliação da Qualidade de Testes de GUI em Ambientes Educacionais
 
 Kit de reprodução do estudo empírico que compara suítes de teste de GUI (Cypress) produzidas por estudantes de graduação com suítes de referência elaboradas sob critérios especialistas, no sistema de e-commerce **Sylius**. A avaliação usa três critérios: **capacidade de detecção de defeitos**, **presença de test smells** e **redundância**.
