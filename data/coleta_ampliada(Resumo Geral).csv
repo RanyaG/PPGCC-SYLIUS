@@ -1,0 +1,8 @@
+﻿RESUMO GERAL — médias por funcionalidade (discentes vs referência);;;;;;
+;;;;;;
+;;;;;;
+Funcionalidade;Nº suítes;Detecção média (aluno);Detecção (ref.);Smells médio (aluno);Redund. média (aluno);Redund. (ref.)
+Products;8;0,0%;100%;5,4;3,4%;0%
+Payment Methods;6;16,7%;100%;5,8;14,4%;0%
+Customers;5;20,0%;100%;5,2;0,0%;0%
+Shipping Methods;3;0,0%;100%;5,0;6,4%;0%
