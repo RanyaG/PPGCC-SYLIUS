@@ -31,3 +31,53 @@ Este pacote de replicação foi estruturado em estrita conformidade com as diret
 ├── results/                        # Figuras geradas pelos scripts
 ├── requirements.txt                # Dependências Python
 └── README.md
+```
+
+## Requisitos
+
+- **Python 3.12+** (para a análise estatística)
+- **Node.js 22+** e **Cypress 12.12** (apenas para reexecutar as suítes de referência)
+- **Docker** com a instância da loja de demonstração do **Sylius 1.x**
+
+## Reproduzindo a análise estatística
+
+A análise estatística e as figuras são reproduzíveis diretamente a partir da planilha de coleta anonimizada.
+
+```bash
+# 1. Instalar as dependências
+pip install -r requirements.txt
+
+# 2. Entrar na pasta de scripts
+cd scripts
+
+# 3. Rodar os testes estatísticos (imprime resultados no terminal)
+python analise_estatistica.py
+
+# 4. Gerar a figura de correlação
+python grafico_estatistica.py
+```
+
+## Reexecutando as suítes de referência (opcional)
+
+As suítes de referência foram escritas para a loja de demonstração do Sylius rodando localmente via Docker, acessível em `http://localhost:9990`. Para executá-las:
+
+```bash
+npx cypress run --spec "reference-suites/products-reference.cy.js" \
+  --config baseUrl=http://localhost:9990
+```
+
+## Composição da amostra
+
+As 22 suítes discentes analisadas distribuem-se em quatro funcionalidades administrativas do Sylius:
+
+| Funcionalidade        | Suítes |
+|-----------------------|:------:|
+| Produtos              |   8    |
+| Métodos de Pagamento  |   6    |
+| Clientes              |   5    |
+| Métodos de Envio      |   3    |
+| **Total**             | **22** |
+
+## Licença
+
+Os artefatos deste repositório destinam-se a fins acadêmicos e de reprodução do estudo.
