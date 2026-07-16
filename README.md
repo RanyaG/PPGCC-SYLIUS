@@ -2,19 +2,18 @@
 
 Kit de reprodução do estudo empírico que compara suítes de teste de GUI (Cypress) produzidas por estudantes de graduação com suítes de referência elaboradas sob critérios especialistas, no sistema de e-commerce **Sylius**. A avaliação usa três critérios: **capacidade de detecção de defeitos**, **presença de test smells** e **redundância**.
 
-Este repositório contém os artefatos necessários para reproduzir a análise dos dados e as figuras do artigo, bem como as suítes de referência e o catálogo de defeitos utilizados no experimento.
+Este repositório contém os artefatos necessários para reproduzir a análise dos dados e as figuras do artigo, bem como as suítes de referência, os códigos brutos anonimizados dos discentes e o catálogo de defeitos utilizados no experimento.
 
 ## 🛡️ Política de Privacidade e Anonimização de Dados (LGPD)
 
 Este pacote de replicação foi estruturado em estrita conformidade com as diretrizes de ética em pesquisa. Durante a coleta, identificou-se que as suítes originais submetidas pelos discentes continham dados pessoais identificáveis (nomes, e-mails institucionais e matrículas). Para proteger a privacidade dos participantes, adotou-se a seguinte estratégia:
 
 1. **Anonimização:** A identidade dos estudantes foi substituída por IDs sequenciais (P1–P8, PG1–PG6, CL1–CL5, EN1–EN3). A correspondência aos autores originais não é divulgada.
-2. **Omissão do Código Bruto:** Os arquivos originais (`.zip` e links do Drive) contendo o código-fonte dos alunos não foram incluídos neste repositório para evitar exposição inadvertida de metadados.
-3. **Reprodutibilidade:** A reprodutibilidade está garantida pelos dados de coleta tabulados, scripts estatísticos, catálogo de defeitos e suítes de referência.
+2. **Disponibilização Segura:** Foram extraídos e disponibilizados apenas os scripts de teste brutos e anonimizados (`.cy.js`). Os arquivos originais completos (`.zip` e configurações locais) contendo o histórico e metadados dos alunos foram omitidos deste repositório para evitar exposição inadvertida.
+3. **Reprodutibilidade:** A reprodutibilidade está garantida pelos dados de coleta tabulados, scripts estatísticos, catálogo de defeitos e o uso do Starter Kit oficial da disciplina.
 
 ## Estrutura do repositório
 
-```text
 .
 ├── data/
 │   └── coleta_ampliada.xlsx        # Planilha anonimizada com a classificação das 22 suítes
@@ -26,24 +25,24 @@ Este pacote de replicação foi estruturado em estrita conformidade com as diret
 │   ├── payment-methods-reference.cy.js
 │   ├── customers-reference.cy.js
 │   └── shipping-methods-reference.cy.js
+├── student-suites-*/               # Pastas contendo os códigos anonimizados dos discentes (.cy.js)
 ├── docs/
 │   └── catalogo_defeitos.md        # Catálogo de defeitos, pontos e roteiro de injeção
 ├── results/                        # Figuras geradas pelos scripts
 ├── requirements.txt                # Dependências Python
 └── README.md
-```
+
 
 ## Requisitos
 
 - **Python 3.12+** (para a análise estatística)
-- **Node.js 22+** e **Cypress 12.12** (apenas para reexecutar as suítes de referência)
-- **Docker** com a instância da loja de demonstração do **Sylius 1.x**
+- **Node.js 22+** e **Cypress 12.12** (para reexecutar as suítes)
+- **Docker** com a instância da loja de demonstração do **Sylius 1.x** (porta 9990)
 
 ## Reproduzindo a análise estatística
 
 A análise estatística e as figuras são reproduzíveis diretamente a partir da planilha de coleta anonimizada.
 
-```bash
 # 1. Instalar as dependências
 pip install -r requirements.txt
 
@@ -55,16 +54,22 @@ python analise_estatistica.py
 
 # 4. Gerar a figura de correlação
 python grafico_estatistica.py
-```
 
-## Reexecutando as suítes de referência (opcional)
 
-As suítes de referência foram escritas para a loja de demonstração do Sylius rodando localmente via Docker, acessível em `http://localhost:9990`. Para executá-las:
+## 🔄 Reproduzindo os Testes via Starter Kit
 
-```bash
-npx cypress run --spec "reference-suites/products-reference.cy.js" \
-  --config baseUrl=http://localhost:9990
-```
+Para garantir a total fidelidade ao ambiente de desenvolvimento original, a execução tanto das suítes de referência quanto das suítes dos discentes deve ser feita utilizando o *Starter Kit* oficial da disciplina. 
+
+Para reproduzir localmente:
+
+1. Faça o clone do repositório base oficial do experimento:
+   git clone https://github.com/mourats/gui-testing-cypress-selenium
+   
+2. Siga as instruções no README do `gui-testing-cypress-selenium` para subir os contêineres Docker (a aplicação Sylius estará mapeada na porta `9990`).
+3. Para testar as suítes deste repositório, substitua o conteúdo da pasta `cypress/e2e` do *Starter Kit* pelos arquivos `.cy.js` desejados (das pastas `student-suites-*` ou `reference-suites`).
+4. *Nota:* Caso alguma suíte discente possua dependência de um arquivo `commands.js` customizado, ele também foi disponibilizado e deve ser alocado na pasta `cypress/support` do *Starter Kit*.
+
+Como a `baseUrl` já está configurada no Starter Kit para a porta 9990, os testes rodarão perfeitamente sem a necessidade de alterar os códigos originais fornecidos.
 
 ## Composição da amostra
 
