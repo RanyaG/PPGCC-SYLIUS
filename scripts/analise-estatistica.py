@@ -6,7 +6,7 @@ from openpyxl import load_workbook
 # ============================================================
 # 1. Carregar os dados diretamente da planilha de coleta
 # ============================================================
-wb = load_workbook('coleta_ampliada.xlsx', data_only=True)
+wb = load_workbook('../data/coleta_ampliada.xlsx', data_only=True)
 
 sheets_config = {
     'Produtos': range(6, 14),
