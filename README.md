@@ -32,7 +32,7 @@ Este pacote de replicação foi estruturado em estrita conformidade com as diret
 ├── results/                        # Figuras geradas pelos scripts
 ├── requirements.txt                # Dependências Python
 └── README.md
-'''
+```
 
 ## Requisitos
 
