@@ -10,13 +10,16 @@ from scipy import stats as spstats
 
 sns.set_style('whitegrid')
 
-wb = load_workbook('coleta_ampliada.xlsx', data_only=True)
+# Carrega a planilha da pasta data/
+wb = load_workbook('../data/coleta_ampliada.xlsx', data_only=True)
+
 sheets_config = {
     'Produtos': range(6, 14),
     'Payment Methods': range(6, 12),
     'Customers': range(6, 12),
     'Shipping Methods': range(6, 10),
 }
+
 rows = []
 for sheet_name, row_range in sheets_config.items():
     ws = wb[sheet_name]
@@ -27,6 +30,7 @@ for sheet_name, row_range in sheets_config.items():
         deteccao = ws[f'D{r}'].value or 0
         redundancia = ws[f'F{r}'].value or 0
         rows.append({'Detecção': deteccao, 'Test smells': smells, 'Redundância': redundancia})
+        
 df = pd.DataFrame(rows)
 
 fig, axes = plt.subplots(1, 2, figsize=(11, 4.3))
@@ -65,6 +69,9 @@ axes[1].grid(axis='y', linestyle=':', alpha=0.6)
 axes[1].set_axisbelow(True)
 
 plt.tight_layout()
-plt.savefig('estatistica_figuras.pdf', bbox_inches='tight')
-plt.savefig('estatistica_figuras.png', dpi=200, bbox_inches='tight')
-print("Figura gerada com sucesso!")
+
+# Salva as figuras diretamente na pasta results/
+plt.savefig('../results/estatistica_figuras.pdf', bbox_inches='tight')
+plt.savefig('../results/estatistica_figuras.png', dpi=200, bbox_inches='tight')
+
+print("Figura gerada com sucesso na pasta results/")
