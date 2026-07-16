@@ -7,11 +7,13 @@ import pandas as pd
 import seaborn as sns
 from openpyxl import load_workbook
 from scipy import stats as spstats
+import os
 
 sns.set_style('whitegrid')
 
-# Carrega a planilha da pasta data/
-wb = load_workbook('../data/coleta_ampliada.xlsx', data_only=True)
+# Carrega a planilha da pasta data/ usando caminho absoluto
+data_path = os.path.join(os.path.dirname(__file__), '..', 'data', 'coleta_ampliada.xlsx')
+wb = load_workbook(data_path, data_only=True)
 
 sheets_config = {
     'Produtos': range(6, 14),
@@ -19,7 +21,6 @@ sheets_config = {
     'Customers': range(6, 12),
     'Shipping Methods': range(6, 10),
 }
-
 rows = []
 for sheet_name, row_range in sheets_config.items():
     ws = wb[sheet_name]
@@ -30,18 +31,17 @@ for sheet_name, row_range in sheets_config.items():
         deteccao = ws[f'D{r}'].value or 0
         redundancia = ws[f'F{r}'].value or 0
         rows.append({'Detecção': deteccao, 'Test smells': smells, 'Redundância': redundancia})
-        
 df = pd.DataFrame(rows)
 
 fig, axes = plt.subplots(1, 2, figsize=(11, 4.3))
 
-# Painel (a): heatmap de correlação de Spearman
+# Painel (a): heatmap de correlação
 corr = df.corr(method='spearman')
 sns.heatmap(corr, annot=True, fmt='.2f', cmap='RdBu_r', vmin=-1, vmax=1,
             square=True, ax=axes[0], cbar_kws={'label': 'rho (Spearman)'})
 axes[0].set_title('(a) Correlação de Spearman entre métricas', fontweight='bold', fontsize=10)
 
-# Painel (b): média +/- IC95% (bootstrap)
+# Painel (b): média +/- IC95%
 rng = np.random.default_rng(42)
 metrics = ['Detecção', 'Test smells', 'Redundância']
 labels = ['Detecção (%)', 'Test smells (0-7)', 'Redundância (%)']
@@ -70,8 +70,10 @@ axes[1].set_axisbelow(True)
 
 plt.tight_layout()
 
-# Salva as figuras diretamente na pasta results/
-plt.savefig('../results/estatistica_figuras.pdf', bbox_inches='tight')
-plt.savefig('../results/estatistica_figuras.png', dpi=200, bbox_inches='tight')
+# Salva na pasta results/
+res_pdf = os.path.join(os.path.dirname(__file__), '..', 'results', 'estatistica_figuras.pdf')
+res_png = os.path.join(os.path.dirname(__file__), '..', 'results', 'estatistica_figuras.png')
+plt.savefig(res_pdf, bbox_inches='tight')
+plt.savefig(res_png, dpi=200, bbox_inches='tight')
 
 print("Figura gerada com sucesso na pasta results/")
