@@ -2,11 +2,13 @@ import pandas as pd
 import numpy as np
 from scipy import stats
 from openpyxl import load_workbook
+import os
 
 # ============================================================
-# 1. Carregar os dados diretamente da planilha de coleta
+# 1. Carregar os dados de forma robusta
 # ============================================================
-wb = load_workbook('../data/coleta_ampliada.xlsx', data_only=True)
+data_path = os.path.join(os.path.dirname(__file__), '..', 'data', 'coleta_ampliada.xlsx')
+wb = load_workbook(data_path, data_only=True)
 
 sheets_config = {
     'Produtos': range(6, 14),
@@ -21,7 +23,7 @@ for sheet_name, row_range in sheets_config.items():
     for r in row_range:
         smells = ws[f'E{r}'].value
         if smells is None:
-            continue  # linha excluida (duplicata de dupla ou nao-entrega)
+            continue
         deteccao = ws[f'D{r}'].value or 0
         redundancia = ws[f'F{r}'].value or 0
         rows.append({
@@ -37,7 +39,7 @@ print(df.groupby('Funcionalidade').size().to_string())
 print()
 
 # ============================================================
-# 2. Teste de normalidade (Shapiro-Wilk) - amostra completa N=22
+# 2. Teste de normalidade (Shapiro-Wilk)
 # ============================================================
 print("=" * 60)
 print("TESTE DE NORMALIDADE (Shapiro-Wilk, N=22)")
@@ -49,8 +51,7 @@ for col in ['Deteccao', 'Smells', 'Redundancia']:
 print()
 
 # ============================================================
-# 3. Teste de hipotese: suites discentes vs. valor fixo da referencia
-#    (Wilcoxon signed-rank, one-sample)
+# 3. Teste de hipótese: suites discentes vs. referência
 # ============================================================
 print("=" * 60)
 print("TESTE DE HIPOTESE: Discentes vs. Referencia (Wilcoxon)")
@@ -74,7 +75,7 @@ for col, ref_val in referencia.items():
 print()
 
 # ============================================================
-# 4. Correlacao de Spearman entre as 3 metricas
+# 4. Correlação de Spearman
 # ============================================================
 print("=" * 60)
 print("CORRELACAO DE SPEARMAN entre metricas (N=22)")
@@ -87,7 +88,7 @@ for a, b in pairs:
 print()
 
 # ============================================================
-# 5. Intervalo de confianca (95%) via bootstrap para as medias
+# 5. Intervalo de confiança (bootstrap)
 # ============================================================
 print("=" * 60)
 print("INTERVALO DE CONFIANCA 95% (bootstrap, 10000 reamostragens)")
@@ -98,6 +99,3 @@ for col in ['Deteccao', 'Smells', 'Redundancia']:
     res = stats.bootstrap(data, np.mean, n_resamples=10000, random_state=rng, method='percentile')
     mean = df[col].mean()
     print(f"{col:15s}: media={mean:.4f}, IC95%=[{res.confidence_interval.low:.4f}, {res.confidence_interval.high:.4f}]")
-print()
-
-print("Analise concluida. Copie estes resultados para a secao de Resultados do artigo.")
