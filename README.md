@@ -29,8 +29,6 @@ Este pacote de replicação foi estruturado em estrita conformidade com as diret
 │   ├── customers-reference.cy.js
 │   └── shipping-methods-reference.cy.js
 ├── student-suites-*/               # Pastas contendo os códigos anonimizados dos discentes (.cy.js)
-├── docs/
-│   └── catalogo_defeitos.md        # Catálogo de defeitos, pontos e roteiro de injeção
 ├── results/                        # Figuras geradas pelos scripts
 ├── requirements.txt                # Dependências Python
 └── README.md
