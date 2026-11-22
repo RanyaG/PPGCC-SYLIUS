@@ -17,9 +17,7 @@ Este pacote de replicação foi estruturado em estrita conformidade com as diret
 ## Estrutura do repositório
 
 ```text
-.
-├── data/
-│   └── coleta_ampliada.xlsx        # Planilha anonimizada com a classificação das 22 suítes
+
 ├── scripts/
 │   ├── analise_estatistica.py      # Testes estatísticos (Shapiro-Wilk, Wilcoxon, Spearman, IC)
 │   └── grafico_estatistica.py      # Gera a figura de correlação + intervalos de confiança
