@@ -14,8 +14,9 @@ Cada suíte discente reúne os testes de uma entrega de graduação. Para cada f
 | Métodos de pagamento | [PG1 a PG6](student-suites-payment-methods/) | [Métodos de pagamento](reference-suites/payment-methods-reference.cy.js) |
 | Clientes | [CL1, CL3, CL4 e CL5](student-suites-customers/) e [CL2](student-suites-CL2/) | [Clientes](reference-suites/customers-references.cy.js) |
 | Métodos de envio | [EN1 a EN3](student-suites-shipping-methods/) | [Métodos de envio](reference-suites/shipping-methods-reference.cy.js) |
+| Taxas de imposto | [TXR1 a TXR4](student-suites-tax-rates/) | [Taxas de imposto](reference-suites/tax-rates-reference.cy.js) |
 
-O conjunto tem **22 suítes discentes e 4 de referência**. Cada referência contém 10 casos de teste.
+O conjunto tem **26 suítes discentes e 5 de referência**. Cada referência contém 10 casos de teste.
 
 ## Como a avaliação funciona
 
