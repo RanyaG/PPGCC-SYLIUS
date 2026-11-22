@@ -1,6 +1,6 @@
 # Qualidade de testes de interface no Sylius
 
-Como saber se um teste automatizado percebe que uma funcionalidade parou de funcionar? Este projeto de mestrado em Ciência da Computação na UFCG investiga essa questão no painel administrativo do [Sylius](https://github.com/Sylius/Sylius). O repositório reúne testes de ponta a ponta escritos em **JavaScript com Cypress** e scripts de análise em **Python**. O recorte publicado cobre quatro funcionalidades de e-commerce
+Como saber se um teste automatizado percebe que uma funcionalidade parou de funcionar? Este repositório reúne os artefatos da minha pesquisa de mestrado em Ciência da Computação na UFCG, que investiga essa questão no painel administrativo do [Sylius](https://github.com/Sylius/Sylius). O repositório reúne testes de ponta a ponta escritos em **JavaScript com Cypress** e scripts de análise em **Python**. O recorte publicado cobre quatro funcionalidades de e-commerce
 
 [![DOI](https://zenodo.org/badge/1302052124.svg)](https://doi.org/10.5281/zenodo.21400917)
 
