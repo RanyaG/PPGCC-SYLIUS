@@ -169,6 +169,15 @@ describe('Referencia - Customers (Admin, Sylius 1.x)', () => {
         assertNotCreated();
       });
     });
+
+    it('rejeita conta de cliente sem senha', () => {
+      cy.visit(routes.new);
+      cy.get(sel.form.firstName).type(rand());
+      cy.get(sel.form.lastName).type(rand());
+      cy.get(sel.form.email).type(randEmail());
+      cy.get(sel.form.createUserLabel).click();
+      assertNotCreated();
+    });
   });
 
   // ---------- EDIÇÃO ----------

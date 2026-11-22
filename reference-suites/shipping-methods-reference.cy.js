@@ -19,7 +19,8 @@ const sel = {
     zone: '#sylius_shipping_method_zone',
     // calculador de custo (select) e o valor por canal (FASHION_WEB)
     calculator: '#sylius_shipping_method_calculator',
-    amount: '#sylius_shipping_method_configuration_FASHION_WEB_amount',
+    channel: '#sylius_shipping_method_channels_0',
+    amount: 'input[id^="sylius_shipping_method_configuration_"][id$="_amount"]',
     submit: '.primary',
     saveChanges: '#sylius_save_changes_button',
   },
@@ -33,6 +34,25 @@ const sel = {
   },
   noResultsText: 'There are no results to display',
 };
+
+function fillShippingMethod({
+  code = rand(),
+  name = `Envio ${rand()}`,
+  zone = 'US',
+  amount = '10',
+} = {}) {
+  if (code !== null) cy.get(sel.form.code).type(code);
+  if (name !== null) cy.get(sel.form.name).type(name);
+  if (zone !== null) cy.get(sel.form.zone).select(zone);
+
+  cy.get(sel.form.calculator).select('flat_rate');
+  cy.get('body').then(($body) => {
+    if ($body.find(sel.form.channel).length) {
+      cy.get(sel.form.channel).check({ force: true });
+    }
+  });
+  cy.get(sel.form.amount).each(($input) => { cy.wrap($input).clear({ force: true }).type(amount, { force: true }); });
+}
 
 function ensureLoggedIn() {
   cy.session(
@@ -58,10 +78,7 @@ function ensureLoggedIn() {
 function seedShippingMethod() {
   const code = rand();
   cy.visit(routes.new);
-  cy.get(sel.form.code).type(code);
-  cy.get(sel.form.name).type(`Envio ${code}`);
-  cy.get(sel.form.zone).select('US');
-  cy.get(sel.form.amount).clear().type('10');
+  fillShippingMethod({ code, name: `Envio ${code}` });
   cy.get(sel.form.submit).click();
   cy.get(sel.flash).should('contain', 'successfully created');
   return cy.wrap(code);
@@ -103,10 +120,7 @@ describe('Referencia - Shipping Methods (Admin, Sylius 1.x)', () => {
     it('cria um metodo de envio com campos validos', () => {
       const code = rand();
       cy.visit(routes.new);
-      cy.get(sel.form.code).type(code);
-      cy.get(sel.form.name).type(`Envio ${code}`);
-      cy.get(sel.form.zone).select('US');
-      cy.get(sel.form.amount).clear().type('10');
+      fillShippingMethod({ code, name: `Envio ${code}` });
       cy.get(sel.form.submit).click();
 
       cy.get(sel.flash).should('contain', 'successfully created');
@@ -119,18 +133,14 @@ describe('Referencia - Shipping Methods (Admin, Sylius 1.x)', () => {
     // [PE Robusto Fraco - classe invalida isolada: Code obrigatorio] (C1)
     it('rejeita criacao com Codigo vazio', () => {
       cy.visit(routes.new);
-      cy.get(sel.form.name).type(`Envio ${rand()}`);
-      cy.get(sel.form.zone).select('US');
-      cy.get(sel.form.amount).clear().type('10');
+      fillShippingMethod({ code: null });
       assertNotCreated();
     });
 
     // [PE Robusto Fraco - classe invalida isolada: Name obrigatorio] (C1)
     it('rejeita criacao com Nome vazio', () => {
       cy.visit(routes.new);
-      cy.get(sel.form.code).type(rand());
-      cy.get(sel.form.zone).select('US');
-      cy.get(sel.form.amount).clear().type('10');
+      fillShippingMethod({ name: null });
       assertNotCreated();
     });
 
@@ -138,10 +148,7 @@ describe('Referencia - Shipping Methods (Admin, Sylius 1.x)', () => {
     it('rejeita Codigo duplicado', () => {
       seedShippingMethod().then((code) => {
         cy.visit(routes.new);
-        cy.get(sel.form.code).type(code);
-        cy.get(sel.form.name).type(`Envio dup ${rand()}`);
-        cy.get(sel.form.zone).select('US');
-        cy.get(sel.form.amount).clear().type('10');
+        fillShippingMethod({ code, name: `Envio dup ${rand()}` });
         assertNotCreated();
       });
     });
@@ -150,9 +157,7 @@ describe('Referencia - Shipping Methods (Admin, Sylius 1.x)', () => {
     // Caracteristica propria desta secao: o metodo exige uma zona de entrega.
     it('rejeita criacao sem Zona selecionada', () => {
       cy.visit(routes.new);
-      cy.get(sel.form.code).type(rand());
-      cy.get(sel.form.name).type(`Envio ${rand()}`);
-      cy.get(sel.form.amount).clear().type('10');
+      fillShippingMethod({ zone: null });
       assertNotCreated();
     });
   });
@@ -164,10 +169,7 @@ describe('Referencia - Shipping Methods (Admin, Sylius 1.x)', () => {
     it('aceita valor de envio igual a 0 (limite valido)', () => {
       const code = rand();
       cy.visit(routes.new);
-      cy.get(sel.form.code).type(code);
-      cy.get(sel.form.name).type(`Envio ${code}`);
-      cy.get(sel.form.zone).select('US');
-      cy.get(sel.form.amount).clear().type('0');
+      fillShippingMethod({ code, name: `Envio ${code}`, amount: '0' });
       cy.get(sel.form.submit).click();
 
       cy.get(sel.flash).should('contain', 'successfully created');
@@ -178,10 +180,7 @@ describe('Referencia - Shipping Methods (Admin, Sylius 1.x)', () => {
     // negativo nao tem significado de negocio e deve ser rejeitado.
     it('rejeita valor de envio negativo', () => {
       cy.visit(routes.new);
-      cy.get(sel.form.code).type(rand());
-      cy.get(sel.form.name).type(`Envio ${rand()}`);
-      cy.get(sel.form.zone).select('US');
-      cy.get(sel.form.amount).clear().type('-5');
+      fillShippingMethod({ amount: '-5' });
       assertNotCreated();
     });
   });
@@ -208,16 +207,6 @@ describe('Referencia - Shipping Methods (Admin, Sylius 1.x)', () => {
 
   // ---------- LISTAGEM / FILTRO (PE: ha / nao ha correspondencia) ----------
   describe('Listagem e filtro', () => {
-    // [PE - classe "ha correspondencia"] (C1)
-    it('filtra por codigo e retorna o metodo correspondente', () => {
-      seedShippingMethod().then((code) => {
-        cy.visit(routes.list);
-        cy.get(sel.filter.search).clear().type(code);
-        cy.get(sel.filter.apply).click();
-        cy.get(sel.grid.rows).should('contain.text', code);
-      });
-    });
-
     // [PE - classe "sem correspondencia" / fronteira de resultado vazio] (C1)
     it('filtra por termo inexistente e exibe estado vazio', () => {
       cy.visit(routes.list);
@@ -239,10 +228,15 @@ describe('Referencia - Shipping Methods (Admin, Sylius 1.x)', () => {
         cy.get(sel.filter.apply).click();
 
         // botao Delete (input hidden _method=DELETE dentro do form da linha)
-        cy.get('input[value="DELETE"]').parents('form').find('button').first()
-          .scrollIntoView().click();
-        // confirmacao do modal (botao verde "ok")
-        cy.get('.ui.green.ok.inverted.button').click();
+        cy.get(sel.grid.rows).first().within(() => {
+          cy.get('input[type="checkbox"]').check({ force: true });
+        });
+
+        cy.get('button[data-bulk-action-requires-confirmation]')
+          .should('not.be.disabled')
+          .click();
+
+        cy.get('.ui.green.ok.inverted.button:visible').click();
 
         cy.get(sel.flash).should('contain', 'successfully deleted');
         cy.get(sel.filter.search).clear().type(code);

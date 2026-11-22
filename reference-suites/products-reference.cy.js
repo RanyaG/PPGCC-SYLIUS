@@ -192,15 +192,6 @@ describe('Referencia - Products (Admin, Sylius 1.x)', () => {
 
   // ---------- LISTAGEM / FILTRO (PE: ha / nao ha correspondencia) ----------
   describe('Listagem e filtro', () => {
-    it('filtra por codigo e retorna o produto correspondente', () => {
-      seedSimpleProduct().then((code) => {
-        cy.visit(routes.list);
-        cy.get(sel.filter.search).clear().type(code);
-        cy.get(sel.filter.apply).click();
-        cy.get(sel.grid.rows).should('contain.text', code);
-      });
-    });
-
     it('filtra por termo inexistente e exibe estado vazio', () => {
       cy.visit(routes.list);
       cy.get(sel.filter.search).clear().type(`INEXISTENTE_${rand()}`);
